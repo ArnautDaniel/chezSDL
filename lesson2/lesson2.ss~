@@ -1,0 +1,16 @@
+(library-directories "~/thunderchez")
+(import (sdl2))
+(sdl-library-init)
+(sdl-initialization)
+
+(define *screen-w* 640)
+(define *screen-h* 480)
+
+(define *window* (sdl-create-window "Lesson 2"
+				    0 0 ;;; x, y
+				    *screen-w*
+				    *screen-h*
+				    0))
+
+(define *surface* (sdl-get-window-surface *window*))
+(define *image* (sdl-load-bmp "x.bmp"))

@@ -1,0 +1,49 @@
+(library-directories "~/thunderchez")
+(import (sdl2))
+(sdl-library-init)
+(sdl-initialization)
+
+(define *screen-w* 640)
+(define *screen-h* 480)
+
+
+(define *window* (sdl-create-window "Lesson 3"
+				    0 0 ;;; x, y
+				    *screen-w*
+				    *screen-h*
+				    0))
+
+(define *surface* (sdl-get-window-surface *window*))
+
+(define (optimize-bmp-from-surf bmp)
+  (sdl-convert-surface bmp (get-surface-format *surface*) 0))
+
+(define *stretchsurface* (optimize-bmp-from-surf
+			  (sdl-load-bmp "stretch.bmp")))
+
+;;;----Utilities --->
+
+
+(define (place-rect-on-surface surf rect x y z)
+  (sdl-fill-rect surf rect (sdl-map-rgb (get-surface-format surf)
+					x y z)))
+
+(define (get-surface-format surf)
+  (ftype-ref sdl-surface-t (format) surf))
+
+(define (make-rect x1 y1 w1 h1)
+  (let ((tr (make-ftype-pointer sdl-rect-t
+				(foreign-alloc
+				 (ftype-sizeof sdl-rect-t)))))
+    (ftype-set! sdl-rect-t (x) tr x1)
+    (ftype-set! sdl-rect-t (y) tr y1)
+    (ftype-set! sdl-rect-t (w) tr w1)
+    (ftype-set! sdl-rect-t (h) tr h1)
+    tr))
+
+(sdl-lower-blit *stretch-surface*
+		(make-rect 0 0 *screen-w* *screen-h*)
+		*surface*
+		(make-rect 0 0 *screen-w* *screen-h*))
+
+(sdl-update-window-surface *window*)
